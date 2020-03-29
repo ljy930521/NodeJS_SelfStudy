@@ -1,0 +1,1 @@
+response.writeHead(302, {Location: `/?id={title}`});
