@@ -3,35 +3,8 @@ var fs = require('fs');
 var url = require('url');
 var qs = require('querystring')
 
-var template = {
-  HTML:function(title, list, body, control) {
-      return `
-      <!doctype html>
-      <html>
-      <head>
-        <title>WEB1 - ${title}</title>
-        <meta charset="utf-8">
-      </head>
-      <body>
-        <h1><a href="/">WEB</a></h1>
-        ${list}
-        ${control}
-        ${body}
-      </body>
-      </html>
-      `;
-  },
-  list:function(filelist) {
-    var list = '<ul>';
-    var i = 0;
-    while (i < filelist.length) {
-      list = list + `<li><a href="/?id=${filelist[i]}">${filelist[i]}</a></li>`;
-      i = i + 1;
-    }
-    list = list + '</ul>';
-    return list;
-  }
-}
+var template = require('./lib/template.js');
+
 var app = http.createServer(function (request, response) {
   var _url = request.url;
   var queryData = url.parse(_url, true).query;
@@ -51,7 +24,8 @@ var app = http.createServer(function (request, response) {
       });
     } else {
       fs.readdir('./data', function (error, filelist) {
-        fs.readFile(`data/${queryData.id}`, 'utf8', function (err, description) {
+        var filteredId = path.parse(queryData.id).base;
+        fs.readFile(`data/${filteredId}`, 'utf8', function (err, description) {
           var title = queryData.id;
           var list = template.list(filelist);
           var html = template.HTML(title, list,
@@ -105,7 +79,8 @@ var app = http.createServer(function (request, response) {
     });
   } else if (pathname === '/update') {
     fs.readdir('./data', function (error, filelist) {
-      fs.readFile(`data/${queryData.id}`, 'utf8', function (err, description) {
+      var filteredId = path.parse(queryData.id).base;
+        fs.readFile(`data/${filteredId}`, 'utf8', function (err, description) {
         var title = queryData.id;
         var list = template.list(filelist);
         var html = template.HTML(title, list,
@@ -154,7 +129,8 @@ var app = http.createServer(function (request, response) {
     request.on('end', function () {
       var post = qs.parse(body)
       var id = post.id;
-      fs.unlink(`data/${id}`, function(err){
+      var filteredId = path.parse(id).base;
+      fs.unlink(`data/${filteredId}`, function(err){
         response.writeHead(302, {Location: `/`});
         response.end();
       })
