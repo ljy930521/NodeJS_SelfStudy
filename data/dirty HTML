@@ -1,0 +1,6 @@
+this is dirty
+<script>
+    location.href = 'https://shop.adidas.co.kr/adiMain.action?NFN_ST=Y';
+</script>
+<h1>더러운세상</h1>
+End.

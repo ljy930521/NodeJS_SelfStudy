@@ -1,1 +1,1 @@
-fs.write(fd, Buffer.from(data, options.encoding), callback);
+nodejs is
